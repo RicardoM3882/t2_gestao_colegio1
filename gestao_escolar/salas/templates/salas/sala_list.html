@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestão de Salas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #444;
+        }
+
+        .sala-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sala-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-add {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn-view, .btn-delete {
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn-view {
+            background-color: #007bff;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestão de Salas</h1>
+        <a href="{% url 'sala-add' %}" class="btn-add">+ Adicionar Sala</a>
+
+        <div class="sala-list">
+            {% for sala in salas %}
+                <div class="sala-card">
+                    <h2>{{ sala.nome }}</h2>
+                    <a href="{% url 'sala-delete' sala.pk %}" class="btn-delete">X</a>
+                    <a href="{% url 'sala-detail' sala.pk %}" class="btn-view">Ver Sala</a>
+                </div>
+            {% empty %}
+                <p>Não há salas cadastradas.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

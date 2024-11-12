@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes da Sala</title>
+    <style>
+        /* Estilos básicos */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .title-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .title-group h1 {
+            color: #444;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .btn-back {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background-color: #17a2b8;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* Estilos do popup */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .popup h2 {
+            margin-top: 0;
+        }
+
+        .popup input[type="text"],
+        .popup button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 90%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .popup button[type="submit"] {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .popup button[type="button"] {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Fundo escuro para o popup */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title-group">
+                <a href="{% url 'sala-list' %}" class="btn-back">← Voltar</a>
+                <h1>Detalhes da Sala - {{ sala.nome }}</h1>
+            </div>
+            <div class="action-buttons">
+                <button id="add-professor-btn" class="btn-action">Adicionar Professor</button>
+                <button id="add-aluno-btn" class="btn-action">Adicionar Aluno</button>
+            </div>
+        </div>
+
+        <!-- Popup para adicionar aluno -->
+ <!-- Popup de Adição de Aluno -->
+<div class="popup" id="aluno-popup">
+    <form method="post" id="aluno-form">
+        {% csrf_token %}
+        <h2>Adicionar Aluno</h2>
+        <input type="text" name="nome" placeholder="Nome do Aluno" required>
+        <input type="text" name="matricula" placeholder="Matrícula" required>
+        <button type="button" onclick="submitAlunoForm({{ sala.pk }})">Adicionar</button>
+        <button type="button" onclick="closePopup('aluno-popup')">Cancelar</button>
+    </form>
+</div>
+
+<script>
+    function submitAlunoForm(salaId) {
+        const form = document.getElementById('aluno-form');
+        const formData = new FormData(form);
+
+        fetch(`{% url 'aluno-add' 0 %}`.replace('0', salaId), {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Atualize a lista de alunos na página
+                closePopup('aluno-popup');
+                location.reload();  // Atualiza a página para exibir o novo aluno
+            } else {
+                alert('Erro ao adicionar aluno');
+            }
+        })
+        .catch(error => console.error('Erro:', error));
+    }
+
+    function closePopup(id) {
+        document.getElementById(id).style.display = "none";
+    }
+</script>
+</body>
+</html>
